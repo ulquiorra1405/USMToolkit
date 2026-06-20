@@ -46,7 +46,7 @@ public partial class WarrantyService : IDisposable
             if (upper.Contains("HP") || upper.Contains("HEWLETT"))
                 return await CheckHpAsync(serial);
             if (upper.Contains("DELL"))
-                return "Dell: API pendiente de gestión";
+                return "Dell: haz clic para validar en la web";
             return $"'{mfr}' no soportada";
         }
         catch (HttpRequestException ex)

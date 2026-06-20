@@ -444,6 +444,29 @@ public partial class DashboardViewModel : ObservableObject
         });
     }
 
+    [RelayCommand]
+    private void OpenWarrantyUrl()
+    {
+        var (mfr, _) = _warranty.GetSystemInfo();
+        var upper = mfr.ToUpperInvariant();
+        var url = upper switch
+        {
+            string s when s.Contains("DELL") => "https://www.dell.com/support",
+            string s when s.Contains("LENOVO") => "https://pcsupport.lenovo.com",
+            string s when s.Contains("HP") || s.Contains("HEWLETT") => "https://support.hp.com",
+            _ => "https://www.dell.com/support"
+        };
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch { }
+    }
+
     public void StopRefresh()
     {
         _refreshTimer?.Stop();

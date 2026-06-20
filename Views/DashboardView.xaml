@@ -174,7 +174,10 @@
                     </StackPanel>
                 </Border>
 
-                <Border Style="{StaticResource DashCard}">
+                <Border Style="{StaticResource DashCard}" Cursor="Hand">
+                    <Border.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding OpenWarrantyUrlCommand}" />
+                    </Border.InputBindings>
                     <StackPanel>
                         <TextBlock Text="🛡" FontSize="16" Foreground="{DynamicResource TextMutedBrush}" />
                         <TextBlock Text="GARANTÍA" FontSize="10" Foreground="{DynamicResource TextDimBrush}" Margin="0 8 0 2" />
