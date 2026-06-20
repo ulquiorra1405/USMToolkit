@@ -445,6 +445,72 @@ public partial class DashboardViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task ExportDiagnostic()
+    {
+        var (mfr, serial) = _warranty.GetSystemInfo();
+        var lines = new[]
+        {
+            "===== DIAGNÓSTICO DEL SISTEMA =====",
+            $"Generado: {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+            $"Equipo: {Environment.MachineName}",
+            $"Usuario: {Environment.UserName}",
+            "",
+            "--- SISTEMA ---",
+            $"OS: {OsVersion}",
+            $"Instalación: {OsInstallDate}",
+            $"Uptime: {Uptime}",
+            $"Fabricante: {mfr}",
+            $"Serial: {serial}",
+            "",
+            "--- CPU ---",
+            $"Modelo: {CpuInfo}",
+            $"Uso: {CpuUsagePercent:F1}%",
+            $"Temperatura: {CpuTemp}",
+            "",
+            "--- GPU ---",
+            $"Modelo: {GpuInfo}",
+            $"Uso: {GpuUsagePercent:F1}%",
+            $"Temperatura: {GpuTemp}",
+            "",
+            "--- MEMORIA ---",
+            $"Uso: {MemoryUsage}",
+            $"RAM: {RamSpecs}",
+            "",
+            "--- DISCO ---",
+            $"Info: {DiskInfo}",
+            $"Temperatura: {DiskTemp}",
+            "",
+            "--- RED ---",
+            $"Gateway: {PingGateway}",
+            $"Latencia: {PingLatency:F0} ms",
+            $"Tráfico: {NetworkTraffic}",
+            "",
+            "--- SALUD ---",
+            $"Health Score: {HealthScore}/100",
+            $"Estado: {HealthStatus}",
+            $"Detalle:\n{HealthBreakdown}",
+            "",
+            "===== FIN DEL REPORTE =====",
+        };
+
+        var docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var fileName = $"Diagnostico_{Environment.MachineName}_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+        var path = System.IO.Path.Combine(docFolder, fileName);
+
+        await System.IO.File.WriteAllTextAsync(path, string.Join(Environment.NewLine, lines));
+
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+        }
+        catch { }
+    }
+
+    [RelayCommand]
     private void OpenWarrantyUrl()
     {
         var (mfr, serial) = _warranty.GetSystemInfo();

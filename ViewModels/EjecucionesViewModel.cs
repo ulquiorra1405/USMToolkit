@@ -317,7 +317,7 @@ public partial class EjecucionesViewModel : ObservableObject
         _progressTimer.Start();
         _currentAppName = app.Name;
         ProgressMessage = $"{ActionVerb} {app.Name}... 0% 0s";
-        LogOutput = $"▶ Ejecutando {app.Name} ({app.Pasos.Count} pasos)...\n";
+        LogOutput = $"[{DateTime.Now:HH:mm:ss}] ▶ Ejecutando {app.Name} ({app.Pasos.Count} pasos)...\n";
         _cts = new CancellationTokenSource();
         var dispatcher = Application.Current.Dispatcher;
 
@@ -338,7 +338,7 @@ public partial class EjecucionesViewModel : ObservableObject
                         resolvedPaso,
                         onAppendLine: line => _ = dispatcher.BeginInvoke(() =>
                         {
-                            LogOutput += line + "\n";
+                            LogOutput += $"[{DateTime.Now:HH:mm:ss}] {line}\n";
                             OnPropertyChanged(nameof(LogOutput));
                         }),
                         onReplaceLine: line => _ = dispatcher.BeginInvoke(() =>
@@ -358,7 +358,7 @@ public partial class EjecucionesViewModel : ObservableObject
                 {
                     _ = dispatcher.BeginInvoke(() =>
                     {
-                        LogOutput += "⛔ Error en paso.\n";
+                        LogOutput += $"[{DateTime.Now:HH:mm:ss}] ⛔ Error en paso.\n";
                         OnPropertyChanged(nameof(LogOutput));
                     });
                 }
@@ -375,7 +375,7 @@ public partial class EjecucionesViewModel : ObservableObject
             ProgressMessage = "⛔ Interrumpido";
             _ = dispatcher.BeginInvoke(() =>
             {
-                LogOutput += "\n⛔ Proceso interrumpido.\n";
+                LogOutput += $"\n[{DateTime.Now:HH:mm:ss}] ⛔ Proceso interrumpido.\n";
                 OnPropertyChanged(nameof(LogOutput));
             });
         }

@@ -155,7 +155,7 @@ public partial class DeploymentsViewModel : ObservableObject
         _progressTimer.Start();
         _currentAppName = selected.FirstOrDefault()?.Name ?? "";
         ProgressMessage = $"{ActionVerb} aplicaciones... 0% 0s";
-        LogOutput = "Iniciando...\n";
+        LogOutput = $"[{DateTime.Now:HH:mm:ss}] Iniciando...\n";
         _cts = new CancellationTokenSource();
 
         var dispatcher = Application.Current.Dispatcher;
@@ -269,7 +269,7 @@ public partial class DeploymentsViewModel : ObservableObject
                     }
                 }
 
-                LogOutput += $"\n▶ {ActionVerb} {app.Name} ({app.Pasos.Count} pasos)...\n";
+                LogOutput += $"\n[{DateTime.Now:HH:mm:ss}] ▶ {ActionVerb} {app.Name} ({app.Pasos.Count} pasos)...\n";
 
                 foreach (var paso in app.Pasos)
                 {
@@ -286,7 +286,7 @@ public partial class DeploymentsViewModel : ObservableObject
                             resolvedPaso,
                             onAppendLine: line => _ = dispatcher.BeginInvoke(() =>
                             {
-                                LogOutput += line + "\n";
+                                LogOutput += $"[{DateTime.Now:HH:mm:ss}] {line}\n";
                                 OnPropertyChanged(nameof(LogOutput));
                             }),
                             onReplaceLine: line => _ = dispatcher.BeginInvoke(() =>
@@ -306,7 +306,7 @@ public partial class DeploymentsViewModel : ObservableObject
                     {
                         _ = dispatcher.BeginInvoke(() =>
                         {
-                            LogOutput += "⛔ Error en paso.\n";
+                            LogOutput += $"[{DateTime.Now:HH:mm:ss}] ⛔ Error en paso.\n";
                             OnPropertyChanged(nameof(LogOutput));
                         });
                     }
@@ -324,7 +324,7 @@ public partial class DeploymentsViewModel : ObservableObject
                 ProgressMessage = $"✅ Instalación completada ({ElapsedDisplay})";
                 _ = dispatcher.BeginInvoke(() =>
                 {
-                    LogOutput += "\n✅ Proceso completado.";
+                    LogOutput += $"\n[{DateTime.Now:HH:mm:ss}] ✅ Proceso completado.";
                     OnPropertyChanged(nameof(LogOutput));
                 });
             }
@@ -334,7 +334,7 @@ public partial class DeploymentsViewModel : ObservableObject
             ProgressMessage = "⛔ Proceso interrumpido";
             _ = dispatcher.BeginInvoke(() =>
             {
-                LogOutput += "\n⛔ Proceso interrumpido.";
+                LogOutput += $"\n[{DateTime.Now:HH:mm:ss}] ⛔ Proceso interrumpido.";
                 OnPropertyChanged(nameof(LogOutput));
             });
         }

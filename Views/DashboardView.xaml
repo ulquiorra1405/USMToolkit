@@ -229,6 +229,21 @@
                 </Border>
             </controls:AdaptiveUniformGrid>
 
+            <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0 16 0 0" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="📄 Exportar diagnóstico"
+                            Command="{Binding ExportDiagnosticCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextPrimaryBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Padding="12 6"
+                            FontSize="12"
+                            Cursor="Hand" />
+                </StackPanel>
+            </Border>
+
             <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="20" Margin="0 24 0 0">
                 <StackPanel>
                     <TextBlock Text="ACCIONES RÁPIDAS" FontSize="11" Foreground="{DynamicResource TextDimBrush}" />
