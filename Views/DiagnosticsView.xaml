@@ -1,0 +1,87 @@
+<UserControl x:Class="Toolkit.Views.DiagnosticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:models="clr-namespace:Toolkit.Models"
+             Background="{DynamicResource ContentBgBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" MinWidth="160" />
+            <ColumnDefinition Width="*" MinWidth="200" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" Padding="16 20 16 20" Background="Transparent" BorderThickness="0"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Diagnósticos" FontSize="24" FontWeight="Light" Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="Pruebas del sistema" FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0 4 0 20" />
+
+                <Button Content="▶ Ejecutar todas" Command="{Binding RunAllTestsCommand}"
+                        IsEnabled="{Binding IsRunning, Converter={StaticResource BoolInvert}}"
+                        Background="Transparent" Foreground="#F5A623" FontWeight="SemiBold"
+                        BorderBrush="#F5A623" BorderThickness="1" materialDesign:ButtonAssist.CornerRadius="4" Padding="14 7" FontSize="12"
+                        HorizontalAlignment="Left" MaxHeight="30" Margin="0 0 20 16" />
+
+                <ListBox ItemsSource="{Binding Tests}" SelectedItem="{Binding SelectedTest}"
+                         Background="Transparent" BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="models:DiagnosticTest">
+                            <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    CornerRadius="4" Padding="10" Margin="0 0 20 6">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                    <TextBlock Text="{Binding Description}" FontSize="10" Foreground="{DynamicResource TextMutedBrush}"
+                                               TextWrapping="Wrap" Margin="0 2 0 0" />
+                                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                                        <Ellipse Width="6" Height="6" Fill="#F5A623"
+                                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}" />
+                                        <Ellipse Width="6" Height="6" Fill="#4CAF50" Margin="4 0 0 0"
+                                                 Visibility="{Binding HasResult, Converter={StaticResource BoolToVis}}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Column="1" Padding="20 20 20 20" Background="Transparent"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="{Binding SelectedTest.Name, FallbackValue='Selecciona una prueba'}"
+                           FontSize="20" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Light" />
+
+                <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4"
+                        Padding="16" Margin="24 16 20 0"
+                        Visibility="{Binding SelectedTest.HasResult, Converter={StaticResource BoolToVis}}">
+                    <StackPanel>
+                        <TextBlock Text="RESUMEN" FontSize="10" Foreground="{DynamicResource TextDimBrush}" Margin="0 0 0 8" />
+                        <TextBlock Text="{Binding SelectedTest.ParsedSummary}" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4"
+                        Padding="12" Margin="24 12 20 0"
+                        Visibility="{Binding SelectedTest.HasResult, Converter={StaticResource BoolToVis}}">
+                    <StackPanel>
+                        <TextBlock Text="SALIDA COMPLETA" FontSize="10" Foreground="{DynamicResource TextDimBrush}" Margin="0 0 0 8" />
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled" MaxHeight="400">
+                            <TextBlock Text="{Binding SelectedTest.RawOutput}" FontFamily="Consolas"
+                                       FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap" />
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+
+                <ProgressBar IsIndeterminate="True" Margin="0 16 0 0" Foreground="#F5A623" Background="{DynamicResource BorderBrush}"
+                             Height="4"
+                             Visibility="{Binding SelectedTest.IsRunning, Converter={StaticResource BoolToVis}}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

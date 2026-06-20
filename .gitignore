@@ -1,0 +1,37 @@
+﻿## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## NuGet
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nupkg
+**/[Pp]ackages/repositories.config
+*.nuget.props
+*.nuget.targets
+*.nupkg.cache
+project.assets.json
+
+## Build artifacts
+*.exe.old*
+*.dll.old*
+Toolkit.zip
+curl-impersonate.exe
+**/wpftmp*
+**/_wpftmp*
+
+## IDE
+.vs/
+*.DotSettings.user
+
+## Playwright
+playwright-test/node_modules/
+playwright-test/package-lock.json
+
+## Release publish
+bin/Release/net9.0-windows/win-x64/
