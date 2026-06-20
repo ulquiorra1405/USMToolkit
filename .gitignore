@@ -30,8 +30,7 @@ curl-impersonate.exe
 *.DotSettings.user
 
 ## Playwright
-playwright-test/node_modules/
-playwright-test/package-lock.json
+# (removed — playwright-test folder deleted from repo)
 
 ## Release publish
 bin/Release/net9.0-windows/win-x64/

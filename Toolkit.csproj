@@ -18,19 +18,11 @@
     <SelfContained>true</SelfContained>
   </PropertyGroup>
 
-  <Target Name="RemovePublishXmlDocs" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release'">
-    <ItemGroup>
-      <_XmlDocsToRemove Include="$(PublishDir)Microsoft.Web.WebView2*.xml" />
-    </ItemGroup>
-    <Delete Files="@(_XmlDocsToRemove)" />
-  </Target>
-
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
     <PackageReference Include="MaterialDesignColors" Version="5.3.2" />
     <PackageReference Include="MaterialDesignThemes" Version="5.3.2" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
     <PackageReference Include="System.Management" Version="10.0.8" />
   </ItemGroup>
 

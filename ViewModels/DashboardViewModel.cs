@@ -86,6 +86,7 @@ public partial class DashboardViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(CpuTempColor))]
     private double _cpuTempValue = -1;
 
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(GpuTempColor))]
     private string _gpuTemp = "Cargando...";
@@ -95,10 +96,7 @@ public partial class DashboardViewModel : ObservableObject
     private double _gpuTempValue = -1;
 
     [ObservableProperty]
-    private string _warrantyInfo = "Haz clic para consultar";
-
-    [ObservableProperty]
-    private bool _isWarrantyLoading;
+    private string _warrantyInfo = "Consultando...";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CpuUsageColor))]
@@ -402,25 +400,6 @@ public partial class DashboardViewModel : ObservableObject
                 NetworkTraffic = $"⬇ {down:F1} Mbps | ⬆ {up:F1} Mbps";
         });
         IsSpeedTesting = false;
-    }
-
-    [RelayCommand]
-    private async Task CheckDellWarranty()
-    {
-        if (IsWarrantyLoading) return;
-        var (mfr, _) = _warranty.GetSystemInfo();
-        if (!mfr.ToUpperInvariant().Contains("DELL")) return;
-
-        IsWarrantyLoading = true;
-        WarrantyInfo = "Consultando...";
-        try
-        {
-            WarrantyInfo = await _warranty.CheckDellWarrantyAsync();
-        }
-        finally
-        {
-            IsWarrantyLoading = false;
-        }
     }
 
     private void LoadQuickActions()
