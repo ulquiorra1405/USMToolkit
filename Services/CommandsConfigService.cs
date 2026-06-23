@@ -128,4 +128,6 @@ public class ToolkitSettings
     public string NetworkPath { get; set; } = "";
     public bool AdvancedMode { get; set; }
     public bool UseLightTheme { get; set; }
+    public string ManualesPath { get; set; } = "";
+    public bool ManualesEditEnabled { get; set; }
 }

@@ -56,6 +56,43 @@
                 </Grid>
             </Border>
 
+            <!-- Manuales configuration -->
+            <TextBlock Text="Manuales" FontSize="24" FontWeight="Light" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0 24 0 0" />
+            <TextBlock Text="Configuración del módulo de manuales" FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0 4 0 20" />
+
+            <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                    CornerRadius="4" Padding="14" Margin="0 0 20 8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Ruta de manuales"
+                               FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0 0 0 8" />
+                    <TextBox Grid.Row="1" Grid.Column="0"
+                             Text="{Binding ManualesPath, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="C:\Tools\manuales"
+                             materialDesign:TextFieldAssist.HasFilledTextField="True"
+                             Foreground="#CCC" FontSize="13"
+                             Padding="8 6" BorderThickness="0" VerticalAlignment="Center"
+                             Background="{DynamicResource CardBgBrush}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 12 0 0">
+                        <TextBlock Text="Permitir edición de manuales" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                        <ToggleButton IsChecked="{Binding ManualesEditEnabled}"
+                                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                      Margin="12 0 0 0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
             <!-- Registry settings -->
             <TextBlock Text="Ajustes del sistema" FontSize="24" FontWeight="Light" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0 24 0 0" />
             <TextBlock Text="Configuración del sistema vía registro" FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0 4 0 20" />

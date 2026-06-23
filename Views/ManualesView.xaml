@@ -1,0 +1,270 @@
+<UserControl x:Class="Toolkit.Views.ManualesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:models="clr-namespace:Toolkit.Models"
+             xmlns:controls="clr-namespace:Toolkit.Controls"
+             Background="{DynamicResource ContentBgBrush}">
+
+    <Grid>
+        <!-- Vista de lista -->
+        <Grid Visibility="{Binding IsViewerVisible, Converter={StaticResource InverseBoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Margin="24 20 24 8">
+                <TextBlock Text="📖 Manuales" FontSize="26" FontWeight="Light"
+                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="Guías de instalación y resolución de casos"
+                           FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0 4 0 12" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Content="➕ Nuevo manual"
+                            Command="{Binding NewManualCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextPrimaryBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Padding="12 6"
+                            Cursor="Hand"
+                            HorizontalAlignment="Left"
+                            FontSize="12" />
+
+                    <ComboBox Grid.Column="2"
+                              ItemsSource="{Binding AvailableCategories}"
+                              SelectedItem="{Binding SelectedCategoryFilter, Mode=TwoWay}"
+                              materialDesign:TextFieldAssist.HasFilledTextField="True"
+                              Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"
+                              Padding="6 2" BorderThickness="0"
+                              Background="{DynamicResource CardBgBrush}"
+                              Width="140"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Estado vacío -->
+            <Border Grid.Row="1" Margin="24"
+                    Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}"
+                    Background="Transparent"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1" CornerRadius="8"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Padding="40" MaxWidth="400">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="📭" FontSize="48" HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding EmptyMessage}"
+                               FontSize="14" Foreground="{DynamicResource TextMutedBrush}"
+                               TextAlignment="Center" Margin="0 12 0 0"
+                               LineHeight="1.5" />
+                </StackPanel>
+            </Border>
+
+            <!-- Lista de manuales (grid responsivo) -->
+            <ScrollViewer Grid.Row="1" Margin="24 0 24 12"
+                          Visibility="{Binding IsEmpty, Converter={StaticResource InverseBoolToVis}}"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding Manuals}" VerticalAlignment="Top">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <controls:AdaptiveUniformGrid ItemMinWidth="340" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:ManualInfo">
+                            <Border Margin="6"
+                                    Background="{DynamicResource CardBgBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    Padding="16"
+                                    Cursor="Hand">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" Value="#F5A623" />
+                                                <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Border.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding DataContext.OpenManualCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                  CommandParameter="{Binding}" />
+                                </Border.InputBindings>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Título -->
+                                    <TextBlock Grid.Row="0"
+                                               Text="{Binding Title}"
+                                               FontSize="14" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                               Margin="0 0 0 12"
+                                               VerticalAlignment="Top" />
+
+                                    <!-- Tags como chips sin borde, con color ambar sutil -->
+                                    <ItemsControl Grid.Row="1" Margin="0 0 0 8"
+                                                  ItemsSource="{Binding Tags}"
+                                                  Visibility="{Binding TagsDisplay, Converter={StaticResource StringNotEmptyVis}}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{DynamicResource TagChipBackgroundBrush}"
+                                                        BorderThickness="0" CornerRadius="3"
+                                                        Padding="6 2" Margin="0 0 4 4">
+                                                    <TextBlock Text="{Binding StringFormat='#{0}'}"
+                                                               FontSize="10"
+                                                               Foreground="{DynamicResource TagChipForegroundBrush}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Fila inferior: fecha izq + categoría der -->
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding UltimaRevisionDisplay, StringFormat='🕐 {0}'}"
+                                                   FontSize="10"
+                                                   Foreground="{DynamicResource TextDimBrush}"
+                                                   VerticalAlignment="Center" />
+
+                                        <Border Grid.Column="1"
+                                                Background="{DynamicResource CategoryBadgeBackgroundBrush}"
+                                                BorderThickness="0" CornerRadius="3"
+                                                Padding="8 3">
+                                            <TextBlock Text="{Binding CategoriaDisplay}"
+                                                       FontSize="10"
+                                                       Foreground="{DynamicResource TextMutedBrush}" />
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Visor de manual -->
+        <Grid Visibility="{Binding IsViewerVisible, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Breadcrumb + toolbar -->
+            <Grid Grid.Row="0" Margin="24 16 24 8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="← Volver"
+                            Command="{Binding BackToListCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextMutedBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Padding="10 4" Margin="0 0 12 0"
+                            Cursor="Hand" FontSize="12" />
+                    <TextBlock Text="{Binding ViewerTitle}"
+                               FontSize="18" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="✏️ Editar"
+                            Command="{Binding EditManualCommand}"
+                            CommandParameter="{Binding SelectedManual}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextPrimaryBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Padding="10 4" Margin="0 0 6 0"
+                            Cursor="Hand" FontSize="12"
+                            Visibility="{Binding IsEditingEnabled, Converter={StaticResource BoolToVis}}" />
+                    <Button Content="📁 Abrir carpeta"
+                            Command="{Binding OpenFolderCommand}"
+                            CommandParameter="{Binding SelectedManual}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextMutedBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Padding="10 4" Margin="6 0 6 0"
+                            Cursor="Hand" FontSize="12" />
+                    <Button Content="🗑️"
+                            Command="{Binding DeleteManualCommand}"
+                            CommandParameter="{Binding SelectedManual}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextMutedBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Width="32" Height="28"
+                            Cursor="Hand" FontSize="12" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Metadata bar -->
+            <Border Grid.Row="1"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1" CornerRadius="6"
+                    Margin="24 0 24 16"
+                    Padding="0"
+                    Background="{DynamicResource CardBgBrush}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="{Binding ViewerMeta}"
+                               FontSize="11" Foreground="{DynamicResource TextDimBrush}"
+                               Padding="16 12" />
+
+                    <FlowDocumentScrollViewer Grid.Row="1"
+                                               Document="{Binding RenderedContent}"
+                                               VerticalScrollBarVisibility="Auto"
+                                               HorizontalScrollBarVisibility="Disabled"
+                                               Padding="16 0 16 16"
+                                               Background="Transparent"
+                                               BorderThickness="0" />
+
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

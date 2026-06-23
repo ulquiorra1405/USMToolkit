@@ -32,6 +32,8 @@ public partial class MainViewModel : ObservableObject
             dv.SearchQuery = q;
         else if (CurrentPage is EjecucionesViewModel ev)
             ev.SearchQuery = q;
+        else if (CurrentPage is ManualesViewModel mv)
+            mv.SearchQuery = q;
     }
 
     [ObservableProperty]
@@ -49,6 +51,7 @@ public partial class MainViewModel : ObservableObject
     public string ToggleTooltip => IsSidebarExpanded ? "Colapsar" : "Expandir";
     public bool IsDeploymentsView => CurrentPage is DeploymentsViewModel;
     public bool IsEjecucionesView => CurrentPage is EjecucionesViewModel;
+    public bool IsManualesView => CurrentPage is ManualesViewModel;
     public bool HasLogPanel => IsDeploymentsView || IsEjecucionesView;
 
     public DashboardViewModel Dashboard { get; }
@@ -57,6 +60,7 @@ public partial class MainViewModel : ObservableObject
     public SettingsViewModel Settings { get; }
     public DiagnosticsViewModel Diagnostics { get; }
     public CommandsEditorViewModel CommandsEditor { get; }
+    public ManualesViewModel Manuales { get; }
 
     public ObservableCollection<CategoriaItem> SidebarCategories { get; } = [];
     public bool HasSidebarCategories => SidebarCategories.Count > 0;
@@ -74,11 +78,13 @@ public partial class MainViewModel : ObservableObject
         CommandsEditor = new CommandsEditorViewModel();
         CommandsEditor.Saved += OnEditorSaved;
         CommandsEditor.ContentChanged += OnEditorContentChanged;
-        Settings = new SettingsViewModel();
+        Manuales = new ManualesViewModel();
         Diagnostics = new DiagnosticsViewModel();
+        Settings = new SettingsViewModel();
         CurrentPage = Dashboard;
         LoadSidebarCategories();
         RefreshToolkitRoot();
+        RefreshManualesConfig();
     }
 
     public void NotifyConfigChanged()
@@ -88,6 +94,8 @@ public partial class MainViewModel : ObservableObject
         Deployments.LoadFromConfig();
         Ejecuciones.LoadFromConfig();
         CommandsEditor?.ReloadConfig();
+        RefreshManualesConfig();
+        Manuales?.ReRenderCurrent();
     }
 
     private void OnEditorContentChanged()
@@ -125,10 +133,12 @@ public partial class MainViewModel : ObservableObject
             1 => Deployments,
             2 => _editorView ??= new CommandsEditorView { DataContext = CommandsEditor },
             3 => new Views.SettingsView { DataContext = Settings },
+            4 => GetManualesPage(),
             _ => Dashboard
         };
         OnPropertyChanged(nameof(IsDeploymentsView));
         OnPropertyChanged(nameof(IsEjecucionesView));
+        OnPropertyChanged(nameof(IsManualesView));
         OnPropertyChanged(nameof(HasLogPanel));
     }
 
@@ -140,6 +150,7 @@ public partial class MainViewModel : ObservableObject
         CurrentPage = Deployments;
         OnPropertyChanged(nameof(IsDeploymentsView));
         OnPropertyChanged(nameof(IsEjecucionesView));
+        OnPropertyChanged(nameof(IsManualesView));
         OnPropertyChanged(nameof(HasLogPanel));
     }
 
@@ -157,7 +168,32 @@ public partial class MainViewModel : ObservableObject
 
         OnPropertyChanged(nameof(IsDeploymentsView));
         OnPropertyChanged(nameof(IsEjecucionesView));
+        OnPropertyChanged(nameof(IsManualesView));
         OnPropertyChanged(nameof(HasLogPanel));
+    }
+
+    private object GetManualesPage()
+    {
+        Manuales.Reload();
+        return Manuales;
+    }
+
+    public void RefreshManualesConfig()
+    {
+        var cfg = _config.Load();
+        var manualesPath = cfg.Configuracion?.ManualesPath ?? "";
+        var editEnabled = cfg.Configuracion?.ManualesEditEnabled ?? false;
+
+        if (string.IsNullOrEmpty(manualesPath))
+        {
+            // Default path: AppData\USMToolkit\manuales
+            manualesPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "USMToolkit", "manuales");
+        }
+
+        Manuales.SetBasePath(manualesPath);
+        Manuales.IsEditingEnabled = editEnabled;
     }
 
     partial void OnIsSidebarExpandedChanged(bool value)

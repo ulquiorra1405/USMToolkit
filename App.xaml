@@ -17,6 +17,7 @@
             <SolidColorBrush x:Key="ContentBgBrush" Color="#121212" />
             <SolidColorBrush x:Key="SidebarBgBrush" Color="#1A1A1A" />
             <SolidColorBrush x:Key="CardBgBrush" Color="#1E1E1E" />
+            <SolidColorBrush x:Key="CardHoverBrush" Color="#282828" />
             <SolidColorBrush x:Key="DarkCardBgBrush" Color="#0D0D0D" />
             <SolidColorBrush x:Key="BorderBrush" Color="#2A2A2A" />
             <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8E8E8" />
@@ -24,6 +25,14 @@
             <SolidColorBrush x:Key="TextMutedBrush" Color="#888888" />
             <SolidColorBrush x:Key="TextDimBrush" Color="#555555" />
             <SolidColorBrush x:Key="HintTextBrush" Color="#777777" />
+            <SolidColorBrush x:Key="TagChipBackgroundBrush" Color="#3A3226" />
+            <SolidColorBrush x:Key="TagChipForegroundBrush" Color="#C4A87A" />
+            <SolidColorBrush x:Key="CategoryBadgeBackgroundBrush" Color="#2A2A30" />
+            <SolidColorBrush x:Key="CodeBlockBackgroundBrush" Color="#181818" />
+            <SolidColorBrush x:Key="CodeBlockBorderBrush" Color="#3C3C3C" />
+            <SolidColorBrush x:Key="InlineCodeBackgroundBrush" Color="#282828" />
+            <SolidColorBrush x:Key="HorizontalRuleBrush" Color="#3C3C3C" />
+            <SolidColorBrush x:Key="QuoteBorderBrush" Color="#646464" />
             <Color x:Key="Accent">#F5A623</Color>
             <Color x:Key="Success">#4CAF50</Color>
 
@@ -167,6 +176,8 @@
 
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InvertBoolConverter x:Key="BoolInvert" />
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
+            <converters:StringNotEmptyToVisibilityConverter x:Key="StringNotEmptyVis" />
             <converters:NavColorConverter x:Key="NavColorConverter" />
             <converters:BoolToGridLengthConverter x:Key="SidebarWidthConverter" ExpandedWidth="196" CollapsedWidth="48" />
             <converters:BoolToGridLengthConverter x:Key="SplitterWidthConverter" ExpandedWidth="5" CollapsedWidth="0" />
@@ -196,6 +207,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:EjecucionesViewModel}">
                 <v:EjecucionesView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ManualesViewModel}">
+                <v:ManualesView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
